@@ -18,4 +18,7 @@ describe("GET:/api/categories", () => {
         expect(body.categories).toHaveLength(4);
       });
   });
+  it("GET api/badroute respons with 204 error", () => {
+    return request(app).get("/api/badroute").expect(204);
+  });
 });
