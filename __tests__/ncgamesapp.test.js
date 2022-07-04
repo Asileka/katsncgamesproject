@@ -10,7 +10,7 @@ afterAll(() => {
   return connection.end();
 });
 describe("GET:/api/categories", () => {
-  it("GET api/categories responds with categories", () => {
+  it("GET api/categories responds with correct number of categories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -18,7 +18,23 @@ describe("GET:/api/categories", () => {
         expect(body.categories).toHaveLength(4);
       });
   });
-  it("GET api/badroute respons with 204 error", () => {
-    return request(app).get("/api/badroute").expect(204);
+  it("GET api/categories responds with correct categories", () => {
+    const expectedObj = {
+      slug: "euro game",
+      description: "Abstact games that involve little luck",
+    };
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.categories[0]).toEqual(expectedObj);
+        body.categories.forEach((category) => {
+          expect(category).toHaveProperty("slug");
+          expect(category).toHaveProperty("description");
+        });
+      });
+  });
+  it("GET api/badroute respons with 404 error", () => {
+    return request(app).get("/api/badroute").expect(404);
   });
 });

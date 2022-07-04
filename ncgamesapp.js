@@ -5,7 +5,7 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.all("/*", (req, res) => {
-  res.status(204).send({ msg: "Route not found" });
+  res.status(404).send({ msg: "Route not found" });
 });
 app.use((err, req, res, next) => {
   console.log("Im in 500 app");
