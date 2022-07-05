@@ -17,3 +17,30 @@ exports.fetchReviewByID = (reviewID) => {
       });
   }
 };
+exports.patchReview = (reviewID, newVote) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    return connection
+      .query("SELECT * FROM reviews WHERE review_id = $1", valuesArr)
+      .then((results) => {
+        return results.rows[0];
+      })
+      .then((review) => {
+        console.log(review + " review");
+        let votes = review.votes;
+        console.log(votes + " votes");
+        votes += newVote;
+        console.log(newVote + " newVote");
+        console.log(votes + " updated votes");
+        valuesArr.push(votes);
+        return connection.query(
+          "INSERT INTO reviews (vote) VALUES $2 WHERE review_id = $1 RETURNING *",
+          valuesArr
+        );
+      })
+      .then((newReview) => {
+        return newReview.rows;
+      });
+  }
+};
