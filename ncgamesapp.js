@@ -1,12 +1,16 @@
 const express = require("express");
 const app = express();
-const { getCategories } = require("./controllers/ncgamescontroller.js");
+const {
+  getCategories,
+  getReviewByID,
+} = require("./controllers/ncgamescontroller.js");
+const { fourOFourHandle } = require("./controllers/ncgameserrorcontroller.js");
 app.use(express.json());
 
 app.get("/api/categories", getCategories);
-app.all("/*", (req, res) => {
-  res.status(404).send({ msg: "Route not found" });
-});
+app.get("/api/reviews/:review_id", getReviewByID);
+//errors
+app.all("/*", fourOFourHandle);
 app.use((err, req, res, next) => {
   console.log("Im in 500 app");
   console.log(err);

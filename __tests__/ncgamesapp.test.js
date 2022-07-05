@@ -38,3 +38,22 @@ describe("GET:/api/categories", () => {
     return request(app).get("/api/badroute").expect(404);
   });
 });
+describe("GET:/api/reviews/:review_id", () => {
+  it("GET /api/reviews/:review_id responds with object of a corresponding review", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toHaveProperty("review_id");
+        expect(body.review).toHaveProperty("created_at");
+      });
+  });
+  it("GET /api/reviews/255 throws 404 error", () => {
+    return request(app)
+      .get("/api/reviews/255")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter valid review id");
+      });
+  });
+});
