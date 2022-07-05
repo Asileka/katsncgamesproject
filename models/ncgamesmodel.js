@@ -5,3 +5,15 @@ exports.fetchCategories = () => {
     return results.rows;
   });
 };
+
+exports.fetchReviewByID = (reviewID) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    return connection
+      .query("SELECT * FROM reviews WHERE review_id = $1;", valuesArr)
+      .then((results) => {
+        return results.rows[0];
+      });
+  }
+};
