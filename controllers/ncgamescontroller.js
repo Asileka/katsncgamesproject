@@ -10,10 +10,12 @@ exports.getCategories = (req, res) => {
 };
 exports.getReviewByID = (req, res) => {
   const reviewID = req.params.review_id;
-  fetchReviewByID(reviewID).then((review) => {
-    if (!review) {
-      return res.status(404).send({ msg: "please enter valid review id" });
-    }
-    res.send({ review });
-  });
+  fetchReviewByID(reviewID)
+    .then((review) => {
+      if (!review) {
+        return res.status(404).send({ msg: "please enter valid review id" });
+      }
+      res.send({ review });
+    })
+    .catch((err) => res.status(404).send(err));
 };
