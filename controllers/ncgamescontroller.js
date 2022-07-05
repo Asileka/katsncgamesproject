@@ -1,7 +1,6 @@
 const {
   fetchCategories,
   fetchReviewByID,
-  checkIfReviewIDExists,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -11,8 +10,10 @@ exports.getCategories = (req, res) => {
 };
 exports.getReviewByID = (req, res) => {
   const reviewID = req.params.review_id;
-  checkIfReviewIDExists(reviewID);
   fetchReviewByID(reviewID).then((review) => {
+    if (!review) {
+      return res.status(404).send({ msg: "please enter valid review id" });
+    }
     res.send({ review });
   });
 };
