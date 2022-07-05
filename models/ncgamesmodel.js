@@ -33,13 +33,17 @@ exports.patchReview = (reviewID, newVote) => {
         votes += newVote;
         console.log(newVote + " newVote");
         console.log(votes + " updated votes");
+        votes = votes.toString();
+        console.log(votes + " stringified votes");
         valuesArr.push(votes);
+        console.log(valuesArr + " valuesArr");
         return connection.query(
-          "INSERT INTO reviews (vote) VALUES $2 WHERE review_id = $1 RETURNING *",
+          "INSERT INTO reviews (votes) VALUES $2 WHERE review_id = $1; SELECT * FROM reviews WHERE review_id = $1;",
           valuesArr
         );
       })
       .then((newReview) => {
+        console.log(newReview + " newReview");
         return newReview.rows;
       });
   }
