@@ -46,12 +46,22 @@ describe("GET:/api/reviews/:review_id", () => {
       .then(({ body }) => {
         expect(body.review).toHaveProperty("review_id");
         expect(body.review).toHaveProperty("created_at");
+        expect(body.review.title).toBe("Agricola");
+        expect(body.review.designer).toBe("Uwe Rosenberg");
       });
   });
   it("GET /api/reviews/255 throws 404 error", () => {
     return request(app)
       .get("/api/reviews/255")
       .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("review id not found");
+      });
+  });
+  it("GET /api/reviews/badid throws 400 error", () => {
+    return request(app)
+      .get("/api/reviews/badid")
+      .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("please enter valid review id");
       });
