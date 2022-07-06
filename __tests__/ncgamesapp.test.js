@@ -85,7 +85,7 @@ describe("PATCH /api/reviews/:review_id", () => {
     return request(app)
       .patch("/api/reviews/1")
       .send(newVote)
-      .expect(202)
+      .expect(200)
       .then((res) => {
         const updatedReview = res.body.review;
         expect(updatedReview).toEqual(expectedReview);

@@ -44,7 +44,7 @@ exports.updateReview = (req, res) => {
       if (!review) {
         return res.status(404).send({ msg: "review id not found" });
       }
-      res.status(202).send({ review });
+      res.status(200).send({ review });
     })
     .catch((err) => res.status(404).send(err));
 };
