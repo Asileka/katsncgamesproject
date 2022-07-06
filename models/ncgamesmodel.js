@@ -17,3 +17,21 @@ exports.fetchReviewByID = (reviewID) => {
       });
   }
 };
+
+exports.patchReview = (reviewID, newVote) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    newVote = newVote.toString();
+    valuesArr.push(newVote);
+    return connection
+      .query(
+        "UPDATE reviews SET votes = votes + $2 WHERE review_id = $1 RETURNING *;",
+        valuesArr
+      )
+      .then((newReview) => {
+        return newReview.rows[0];
+      })
+      .catch((err) => console.log(err + "error"));
+  }
+};
