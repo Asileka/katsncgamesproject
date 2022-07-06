@@ -34,7 +34,7 @@ describe("GET:/api/categories", () => {
         });
       });
   });
-  it("GET api/badroute respons with 404 error", () => {
+  it("GET api/badroute responds with 404 error", () => {
     return request(app).get("/api/badroute").expect(404);
   });
 });
@@ -138,6 +138,34 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("please enter a valid number of votes");
+      });
+  });
+});
+describe("GET:/api/users", () => {
+  it("GET api/users responds with correct number of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users).toHaveLength(4);
+      });
+  });
+  it("GET api/users responds with correct users", () => {
+    const expectedObj = {
+      username: "mallionaire",
+      name: "haz",
+      avatar_url:
+        "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+    };
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.users[0]).toEqual(expectedObj);
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("avatar_url");
+        });
       });
   });
 });

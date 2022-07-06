@@ -4,6 +4,7 @@ const {
   getCategories,
   getReviewByID,
   updateReview,
+  getUsers,
 } = require("./controllers/ncgamescontroller.js");
 const { fourOFourHandle } = require("./controllers/ncgameserrorcontroller.js");
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewByID);
 app.patch("/api/reviews/:review_id", updateReview);
+app.get("/api/users", getUsers);
 //errors
 app.all("/*", fourOFourHandle);
 app.use((err, req, res, next) => {

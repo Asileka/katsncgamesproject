@@ -2,6 +2,7 @@ const {
   fetchCategories,
   fetchReviewByID,
   patchReview,
+  fetchUsers,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -37,8 +38,6 @@ exports.updateReview = (req, res) => {
       .status(400)
       .send({ msg: "please enter a valid number of votes" });
   }
-  // console.log(newVote + " newVote in controller");
-  // console.log(typeof newVote + " typeof newVote controller");
   patchReview(reviewID, newVote)
     .then((review) => {
       if (!review) {
@@ -47,4 +46,9 @@ exports.updateReview = (req, res) => {
       res.status(200).send({ review });
     })
     .catch((err) => res.status(404).send(err));
+};
+exports.getUsers = (req, res) => {
+  fetchUsers().then((users) => {
+    res.send({ users });
+  });
 };

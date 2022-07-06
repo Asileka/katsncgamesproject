@@ -35,3 +35,8 @@ exports.patchReview = (reviewID, newVote) => {
       .catch((err) => console.log(err + "error"));
   }
 };
+exports.fetchUsers = () => {
+  return connection.query("SELECT * FROM users;").then((results) => {
+    return results.rows;
+  });
+};
