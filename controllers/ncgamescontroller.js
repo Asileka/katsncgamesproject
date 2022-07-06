@@ -3,6 +3,7 @@ const {
   fetchReviewByID,
   patchReview,
   fetchUsers,
+  checkReviewComments,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -16,11 +17,14 @@ exports.getReviewByID = (req, res) => {
   if (!parsedReviewID) {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
-  fetchReviewByID(reviewID)
+  const comment_count = checkReviewComments(reviewID);
+  fetchReviewByID(reviewID, comment_count)
     .then((review) => {
       if (!review) {
         return res.status(404).send({ msg: "review id not found" });
       }
+      // console.log({ review } + " review");
+
       res.send({ review });
     })
     .catch((err) => res.status(404).send(err));

@@ -6,13 +6,15 @@ exports.fetchCategories = () => {
   });
 };
 
-exports.fetchReviewByID = (reviewID) => {
+exports.fetchReviewByID = (reviewID, comment_count) => {
   let valuesArr = [];
   if (reviewID) {
     valuesArr.push(reviewID);
     return connection
       .query("SELECT * FROM reviews WHERE review_id = $1;", valuesArr)
       .then((results) => {
+        results.rows[0].comment_count = comment_count;
+        console.log(results.rows[0]);
         return results.rows[0];
       });
   }
@@ -39,4 +41,15 @@ exports.fetchUsers = () => {
   return connection.query("SELECT * FROM users;").then((results) => {
     return results.rows;
   });
+};
+exports.checkReviewComments = (reviewID) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    return connection
+      .query("SELECT * from comments WHERE review_id = $1", valuesArr)
+      .then((results) => {
+        return results.rows.length;
+      });
+  }
 };
