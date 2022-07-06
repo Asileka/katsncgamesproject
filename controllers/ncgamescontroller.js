@@ -31,8 +31,14 @@ exports.updateReview = (req, res) => {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
   const newVote = req.body.inc_votes;
-  console.log(newVote + " newVote in controller");
-  console.log(typeof newVote + " typeof newVote controller");
+  const parsedNewVote = parseInt(newVote);
+  if (!parsedNewVote) {
+    return res
+      .status(400)
+      .send({ msg: "please enter a valid number of votes" });
+  }
+  // console.log(newVote + " newVote in controller");
+  // console.log(typeof newVote + " typeof newVote controller");
   patchReview(reviewID, newVote)
     .then((review) => {
       if (!review) {
