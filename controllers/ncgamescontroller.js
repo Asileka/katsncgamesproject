@@ -17,8 +17,8 @@ exports.getReviewByID = (req, res) => {
   if (!parsedReviewID) {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
-  const comment_count = checkReviewComments(reviewID);
-  fetchReviewByID(reviewID, comment_count)
+  // const comment_count = checkReviewComments(reviewID);
+  fetchReviewByID(reviewID)
     .then((review) => {
       if (!review) {
         return res.status(404).send({ msg: "review id not found" });
