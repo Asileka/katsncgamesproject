@@ -24,6 +24,20 @@ exports.fetchReviewByID = (reviewID) => {
       });
   }
 };
+exports.fetchReviews = () => {
+  // return connection.query("SELECT * FROM reviews;")
+  return connection
+    .query(
+      `SELECT reviews.*, count(comments.review_id) as "comment_count" 
+  FROM reviews 
+  LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+  GROUP BY reviews.review_id
+  ORDER BY created_at desc;`
+    )
+    .then((results) => {
+      return results.rows;
+    });
+};
 
 exports.patchReview = (reviewID, newVote) => {
   let valuesArr = [];

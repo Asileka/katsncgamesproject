@@ -180,3 +180,29 @@ describe("GET:/api/users", () => {
       });
   });
 });
+describe("GET:/api/reviews", () => {
+  it("GET /api/reviews responds with object of all reviews with comment_count property", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const review1 = body.reviews[0];
+        //console.log(body.reviews[0].title + " body");
+        expect(review1).toHaveProperty("review_id");
+        expect(review1).toHaveProperty("created_at");
+        expect(review1).toHaveProperty("comment_count");
+        expect(review1.comment_count).toBe("0");
+      });
+  });
+  test("GET /api/reviews responds with reviews sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const review1 = body.reviews[0];
+        expect(body.reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
