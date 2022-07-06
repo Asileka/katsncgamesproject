@@ -10,23 +10,18 @@ exports.fetchReviewByID = (reviewID) => {
   let valuesArr = [];
   if (reviewID) {
     valuesArr.push(reviewID);
-    return (
-      connection
-        // .query("SELECT * FROM reviews WHERE review_id = $1;", valuesArr)
-        .query(
-          `SELECT reviews.*, count(comments.review_id) as "comment_count" 
+    return connection
+      .query(
+        `SELECT reviews.*, count(comments.review_id) as "comment_count" 
           FROM reviews 
           LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
           WHERE reviews.review_id = $1 
           GROUP BY reviews.review_id;`,
-          valuesArr
-        )
-        .then((results) => {
-          // results.rows[0].comment_count = comment_count;
-          // console.log(results.rows[0]);
-          return results.rows[0];
-        })
-    );
+        valuesArr
+      )
+      .then((results) => {
+        return results.rows[0];
+      });
   }
 };
 
@@ -52,14 +47,3 @@ exports.fetchUsers = () => {
     return results.rows;
   });
 };
-// exports.checkReviewComments = (reviewID) => {
-//   let valuesArr = [];
-//   if (reviewID) {
-//     valuesArr.push(reviewID);
-//     return connection
-//       .query("SELECT * from comments WHERE review_id = $1", valuesArr)
-//       .then((results) => {
-//         return results.rows.length;
-//       });
-//   }
-// };
