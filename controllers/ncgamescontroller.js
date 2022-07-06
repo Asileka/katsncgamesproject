@@ -3,6 +3,7 @@ const {
   fetchReviewByID,
   patchReview,
   fetchUsers,
+  fetchReviews,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -51,5 +52,10 @@ exports.updateReview = (req, res) => {
 exports.getUsers = (req, res) => {
   fetchUsers().then((users) => {
     res.send({ users });
+  });
+};
+exports.getReviews = (req, res) => {
+  fetchReviews().then((reviews) => {
+    res.send({ reviews });
   });
 };
