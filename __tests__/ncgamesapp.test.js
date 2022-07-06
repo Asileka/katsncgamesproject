@@ -91,4 +91,14 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(updatedReview).toEqual(expectedReview);
       });
   });
+  it("throws 404 error if entered non-existent id", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/300")
+      .send(newVote)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("review id not found");
+      });
+  });
 });

@@ -27,24 +27,18 @@ exports.patchReview = (reviewID, newVote) => {
         return results.rows[0];
       })
       .then((review) => {
-        console.log(review + " review");
         let votes = review.votes;
-        console.log(votes + " votes");
         votes += newVote;
-        console.log(newVote + " newVote");
-        console.log(votes + " updated votes");
         votes = votes.toString();
-        console.log(votes + " stringified votes");
         valuesArr.push(votes);
-        console.log(valuesArr + " valuesArr");
         return connection.query(
-          "INSERT INTO reviews (votes) VALUES $2 WHERE review_id = $1; SELECT * FROM reviews WHERE review_id = $1;",
+          "UPDATE reviews SET votes = $2 WHERE review_id = $1 RETURNING *;",
           valuesArr
         );
       })
       .then((newReview) => {
-        console.log(newReview + " newReview");
-        return newReview.rows;
-      });
+        return newReview.rows[0];
+      })
+      .catch((err) => console.log(err + "error"));
   }
 };
