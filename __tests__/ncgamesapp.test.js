@@ -67,6 +67,17 @@ describe("GET:/api/reviews/:review_id", () => {
       });
   });
 });
+describe("GET:/api/reviews/:review_id comment_count addition", () => {
+  it("GET /api/reviews/:review_id responds with object of a corresponding review including comment_count property", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toHaveProperty("comment_count");
+        expect(body.review.comment_count).toBe("3");
+      });
+  });
+});
 describe("PATCH /api/reviews/:review_id", () => {
   it("accepts requests with votes update, returns an updated review", () => {
     const newVote = { inc_votes: 1 };

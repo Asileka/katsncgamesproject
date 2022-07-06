@@ -11,7 +11,14 @@ exports.fetchReviewByID = (reviewID) => {
   if (reviewID) {
     valuesArr.push(reviewID);
     return connection
-      .query("SELECT * FROM reviews WHERE review_id = $1;", valuesArr)
+      .query(
+        `SELECT reviews.*, count(comments.review_id) as "comment_count" 
+          FROM reviews 
+          LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+          WHERE reviews.review_id = $1 
+          GROUP BY reviews.review_id;`,
+        valuesArr
+      )
       .then((results) => {
         return results.rows[0];
       });
