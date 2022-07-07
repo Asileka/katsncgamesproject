@@ -224,4 +224,22 @@ describe("GET:/api/reviews/:review_id/comments", () => {
         });
       });
   });
+  it("GET /api/reviews/badid/comments string review_id throws 400 error", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .get("/api/reviews/badid/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter valid review id");
+      });
+  });
+  it("GET /api/reviews/455/comments non-existing review_id throws 400 error", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .get("/api/reviews/455/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter valid review id");
+      });
+  });
 });
