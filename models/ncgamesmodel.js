@@ -77,3 +77,22 @@ exports.fetchCommentsForReview = (reviewID) => {
       .catch((err) => console.log(err + "error"));
   }
 };
+exports.checkIfReviewIDExists = (reviewID) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    return connection
+      .query(
+        `SELECT *
+          FROM reviews 
+          WHERE review_id = $1 ;`,
+        valuesArr
+      )
+      .then((results) => {
+        console.log(results + " results in checkId models");
+        if (!results.length) {
+          return false;
+        }
+      });
+  }
+};
