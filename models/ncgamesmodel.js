@@ -94,6 +94,7 @@ exports.checkIfReviewIDExists = (reviewID) => {
         if (!results.rows.length) {
           return false;
         }
+        return true;
       });
   }
 };
