@@ -233,12 +233,12 @@ describe("GET:/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("please enter valid review id");
       });
   });
-  it("GET /api/reviews/455/comments non-existing review_id throws 400 error", () => {
+  it("GET /api/reviews/455/comments non-existing review_id throws 404 error", () => {
     return request(app)
       .get("/api/reviews/455/comments")
-      .expect(400)
+      .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("please enter valid review id");
+        expect(msg).toBe("review id not found");
       });
   });
   it("GET /api/reviews/1/comments  review_id with no comments throws 404 error", () => {

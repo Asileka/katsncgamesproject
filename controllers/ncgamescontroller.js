@@ -61,13 +61,14 @@ exports.getReviews = (req, res) => {
     res.send({ reviews });
   });
 };
-exports.getCommentsForReview = (req, res) => {
+exports.getCommentsForReview = async (req, res) => {
   const reviewID = req.params.review_id;
   const parsedReviewID = parseInt(reviewID);
   if (!parsedReviewID) {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
-  if (!checkIfReviewIDExists(reviewID)) {
+  const checkID = await checkIfReviewIDExists(reviewID);
+  if (!checkID) {
     return res.status(404).send({ msg: "review id not found" });
   }
   fetchCommentsForReview(reviewID)
