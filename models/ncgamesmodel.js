@@ -25,7 +25,6 @@ exports.fetchReviewByID = (reviewID) => {
   }
 };
 exports.fetchReviews = () => {
-  // return connection.query("SELECT * FROM reviews;")
   return connection
     .query(
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
@@ -60,4 +59,21 @@ exports.fetchUsers = () => {
   return connection.query("SELECT * FROM users;").then((results) => {
     return results.rows;
   });
+};
+exports.fetchCommentsForReview = (reviewID) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    return connection
+      .query(
+        `SELECT *
+  FROM comments
+  WHERE review_id = $1;`,
+        valuesArr
+      )
+      .then((results) => {
+        return results.rows;
+      })
+      .catch((err) => console.log(err + "error"));
+  }
 };

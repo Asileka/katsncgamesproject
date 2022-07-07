@@ -187,7 +187,6 @@ describe("GET:/api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const review1 = body.reviews[0];
-        //console.log(body.reviews[0].title + " body");
         expect(review1).toHaveProperty("review_id");
         expect(review1).toHaveProperty("created_at");
         expect(review1).toHaveProperty("comment_count");
@@ -201,6 +200,27 @@ describe("GET:/api/reviews", () => {
       .then(({ body }) => {
         expect(body.reviews).toBeSortedBy("created_at", {
           descending: true,
+        });
+      });
+  });
+});
+describe("GET:/api/reviews/:review_id/comments", () => {
+  it("GET /api/reviews/:review_id/comments responds with correct number of comments for the specified review", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(3);
+      });
+  });
+  it("GET /api/reviews/:review_id/comments responds with correct categories", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("review_id");
         });
       });
   });
