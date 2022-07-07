@@ -69,6 +69,10 @@ exports.getCommentsForReview = (req, res) => {
 
   fetchCommentsForReview(reviewID)
     .then((comments) => {
+      console.log(comments);
+      if (!comments.length) {
+        return res.status(404).send({ msg: "no comments found" });
+      }
       if (!comments) {
         return res.status(404).send({ msg: "review id not found" });
       }

@@ -234,12 +234,19 @@ describe("GET:/api/reviews/:review_id/comments", () => {
       });
   });
   it("GET /api/reviews/455/comments non-existing review_id throws 400 error", () => {
-    const newVote = { inc_votes: 1 };
     return request(app)
       .get("/api/reviews/455/comments")
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("please enter valid review id");
+      });
+  });
+  it("GET /api/reviews/1/comments  review_id with no comments throws 404 error", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("no comments found");
       });
   });
 });
