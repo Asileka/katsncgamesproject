@@ -96,3 +96,43 @@ exports.checkIfReviewIDExists = (reviewID) => {
       });
   }
 };
+exports.postComment = (reviewID, newComment, commentUsername) => {
+  let valuesArr = [];
+  if (reviewID) {
+    valuesArr.push(reviewID);
+    valuesArr.push(newComment);
+    valuesArr.push(commentUsername);
+    return connection
+      .query(
+        `INSERT INTO comments
+        (review_id, body, author)
+        VALUES
+        ($1, $2, (SELECT username from users WHERE username = $3))
+        RETURNING *;`,
+        valuesArr
+      )
+      .then((newReview) => {
+        return newReview.rows[0];
+      })
+      .catch((err) => console.log(err + "error"));
+  }
+};
+exports.checkIfUserExists = (commentUsername) => {
+  let valuesArr = [];
+  if (commentUsername) {
+    valuesArr.push(commentUsername);
+    return connection
+      .query(
+        `SELECT *
+          FROM users 
+          WHERE username = $1 ;`,
+        valuesArr
+      )
+      .then((results) => {
+        if (!results.rowCount) {
+          return false;
+        }
+        return true;
+      });
+  }
+};

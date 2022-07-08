@@ -250,3 +250,71 @@ describe("GET:/api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("POST /api/reviews/:review_id/comments", () => {
+  it("acceptscomments with body and username, returns created review", () => {
+    const postedComment = {
+      username: "philippaclaire9",
+      body: "my test comment",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(postedComment)
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toHaveProperty("author");
+        expect(res.body.comment).toHaveProperty("body");
+        expect(res.body.comment).toHaveProperty("comment_id");
+        const recievedComment = res.body.comment;
+        expect(recievedComment.author).toBe("philippaclaire9");
+        expect(recievedComment.body).toBe("my test comment");
+      });
+  });
+  it("throws 404 error if entered non-existent review id", () => {
+    const postedComment = {
+      username: "philippaclaire9",
+      body: "my test comment",
+    };
+    return request(app)
+      .post("/api/reviews/366/comments")
+      .send(postedComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("review id not found");
+      });
+  });
+  it("throws 401 error if username is not registered", () => {
+    const postedComment = {
+      username: "Kat",
+      body: "my test comment",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(postedComment)
+      .expect(401)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("username not found, please register first");
+      });
+  });
+  it("throws 400 error if no body sent", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send()
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter a comment and a valid username");
+      });
+  });
+  it("POST /api/reviews/1/comments throws 400 error if sent a body with a wrong key", () => {
+    const postedComment = {
+      wrongkey: "philippaclaire9",
+      verywrongkey: "my test comment",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(postedComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter a comment and a valid username");
+      });
+  });
+});
