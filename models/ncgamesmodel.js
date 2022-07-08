@@ -156,3 +156,14 @@ exports.checkIfUserExists = (commentUsername) => {
       });
   }
 };
+exports.checkCategories = () => {
+  return connection
+    .query(
+      `SELECT category
+  FROM reviews;`
+    )
+    .then((results) => {
+      return results.rows;
+    })
+    .catch((err) => console.log(err + "error"));
+};
