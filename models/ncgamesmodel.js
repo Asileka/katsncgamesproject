@@ -89,9 +89,7 @@ exports.checkIfReviewIDExists = (reviewID) => {
         valuesArr
       )
       .then((results) => {
-        console.log(results.rows.length + " results length in checkId models");
-        console.log(results.rows + " results.rows in checkId models");
-        if (!results.rows.length) {
+        if (!results.rowCount) {
           return false;
         }
         return true;
