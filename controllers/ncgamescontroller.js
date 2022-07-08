@@ -6,6 +6,8 @@ const {
   fetchReviews,
   fetchCommentsForReview,
   checkIfReviewIDExists,
+  postComment,
+  checkIfUserExists,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -80,6 +82,39 @@ exports.getCommentsForReview = async (req, res) => {
         return res.status(404).send({ msg: "review id not found" });
       }
       res.status(200).send({ comments });
+    })
+    .catch((err) => res.status(404).send(err));
+};
+exports.postCommentForReview = async (req, res) => {
+  const reviewID = req.params.review_id;
+  const parsedReviewID = parseInt(reviewID);
+  if (!parsedReviewID) {
+    return res.status(400).send({ msg: "please enter valid review id" });
+  }
+  const checkID = await checkIfReviewIDExists(reviewID);
+  if (!checkID) {
+    return res.status(404).send({ msg: "review id not found" });
+  }
+
+  const newComment = req.body.body;
+  const commentUsername = req.body.username;
+  if (!newComment || !commentUsername) {
+    return res
+      .status(400)
+      .send({ msg: "please enter a comment and a valid username" });
+  }
+  const checkUser = await checkIfUserExists(commentUsername);
+  if (!checkUser) {
+    return res
+      .status(401)
+      .send({ msg: "username not found, please register first" });
+  }
+  postComment(reviewID, newComment, commentUsername)
+    .then((comment) => {
+      if (!comment) {
+        return res.status(404).send({ msg: "sorry something went wrong" });
+      }
+      res.status(201).send({ comment });
     })
     .catch((err) => res.status(404).send(err));
 };
