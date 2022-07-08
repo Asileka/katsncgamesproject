@@ -65,10 +65,22 @@ exports.getReviews = async (req, res) => {
   if (order !== "desc" && order !== "asc") {
     return res.status(400).send({ msg: "please enter asc or desc order" });
   }
-  const categoriesWhitelist = await checkCategories();
-  // if (category !== anything from whitelist) {
-  //   return res.status(400).send({ msg: "please enter valid category" });
-  // }
+  const categoriesWhitelistBigArray = await checkCategories();
+  const categoriesWhitelist = categoriesWhitelistBigArray.reduce(
+    (acc, item) => {
+      if (!acc.includes(item.category)) {
+        acc.push(item.category);
+      }
+      return acc;
+    },
+    []
+  );
+  if (category) {
+    if (!categoriesWhitelist.includes(category)) {
+      return res.status(400).send({ msg: "please enter valid category" });
+    }
+  }
+
   if (
     sort_by !== "title" &&
     sort_by !== "designer" &&
@@ -78,7 +90,6 @@ exports.getReviews = async (req, res) => {
   ) {
     return res.status(400).send({ msg: "please enter valid sort by column" });
   }
-  console.log(order + " order in control");
   fetchReviews(sort_by, order, category).then((reviews) => {
     res.send({ reviews });
   });

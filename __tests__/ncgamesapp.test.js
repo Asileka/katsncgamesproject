@@ -329,4 +329,12 @@ describe("GET:/api/reviews accepts queries", () => {
         });
       });
   });
+  test("GET /api/reviews?category=evilcategory throws 400 if entered category not in whitelist", () => {
+    return request(app)
+      .get("/api/reviews?category=evilcategory")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter valid category");
+      });
+  });
 });
