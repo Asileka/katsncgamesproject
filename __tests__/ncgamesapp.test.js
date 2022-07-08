@@ -241,12 +241,12 @@ describe("GET:/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("review id not found");
       });
   });
-  it("GET /api/reviews/1/comments  review_id with no comments throws 404 error", () => {
+  it("GET /api/reviews/1/comments review_id with no comments returns an empty array", () => {
     return request(app)
       .get("/api/reviews/1/comments")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("no comments found");
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
       });
   });
 });

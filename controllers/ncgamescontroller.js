@@ -74,12 +74,12 @@ exports.getCommentsForReview = async (req, res) => {
   fetchCommentsForReview(reviewID)
     .then((comments) => {
       if (!comments.length) {
-        return res.status(404).send({ msg: "no comments found" });
+        return res.status(200).send({ comments });
       }
       if (!comments) {
         return res.status(404).send({ msg: "review id not found" });
       }
-      res.send({ comments });
+      res.status(200).send({ comments });
     })
     .catch((err) => res.status(404).send(err));
 };
