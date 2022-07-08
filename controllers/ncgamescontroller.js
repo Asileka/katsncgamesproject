@@ -61,6 +61,13 @@ exports.getReviews = (req, res) => {
   const sort_by = req.query.sort_by || "created_at";
   const order = req.query.order || "desc";
   const category = req.query.category;
+  if (order !== "desc" && order !== "asc") {
+    return res.status(400).send({ msg: "please enter asc or desc order" });
+  }
+  // if (sort_by !== title || designer || owner || votes) {
+  //   return res.status(400).send({ msg: "please enter valid sort by column" });
+  // }
+  console.log(order + " order in control");
   fetchReviews(sort_by, order, category).then((reviews) => {
     res.send({ reviews });
   });

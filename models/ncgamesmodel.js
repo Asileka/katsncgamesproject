@@ -26,22 +26,31 @@ exports.fetchReviewByID = (reviewID) => {
 };
 exports.fetchReviews = (sort_by, order, category) => {
   const valuesArr = [];
-  valuesArr.push(sort_by);
-  valuesArr.push(order);
-  valuesArr.push(category);
-  const categoryString = "WHERE category = $3";
+
+  //valuesArr.push(order);
+
   if (!category) {
-    valuesArr.push(categoryString);
+    return connection
+      .query(
+        `SELECT reviews.*, count(comments.review_id) as "comment_count" 
+  FROM reviews 
+  LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+  GROUP BY reviews.review_id
+  ORDER BY ${sort_by} ${order};`,
+        valuesArr
+      )
+      .then((results) => {
+        return results.rows;
+      });
   }
-  valuesArr.push("");
   return connection
     .query(
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
   FROM reviews 
   LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
-  $4
+  WHERE category = ${category}
   GROUP BY reviews.review_id
-  ORDER BY $1 $2;`,
+  ORDER BY ${sort_by} ${order};`,
       valuesArr
     )
     .then((results) => {
