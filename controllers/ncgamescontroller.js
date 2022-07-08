@@ -21,7 +21,6 @@ exports.getReviewByID = (req, res) => {
   if (!parsedReviewID) {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
-
   fetchReviewByID(reviewID)
     .then((review) => {
       if (!review) {
@@ -59,7 +58,19 @@ exports.getUsers = (req, res) => {
   });
 };
 exports.getReviews = (req, res) => {
-  fetchReviews().then((reviews) => {
+  const { sort_by } = req.query;
+  if (!sort_by) {
+    sort_by = "created_at";
+  }
+  const { order } = req.query;
+  if (!order) {
+    order = "desc";
+  }
+  const { category } = req.query;
+  if (!category) {
+    category = "*";
+  }
+  fetchReviews(sort_by, order, category).then((reviews) => {
     res.send({ reviews });
   });
 };

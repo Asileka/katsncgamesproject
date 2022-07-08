@@ -24,14 +24,20 @@ exports.fetchReviewByID = (reviewID) => {
       });
   }
 };
-exports.fetchReviews = () => {
+exports.fetchReviews = (sort_by, order, category) => {
+  const valuesArr = [];
+  valuesArr.push(sort_by);
+  valuesArr.push(order);
+  valuesArr.push(category);
   return connection
     .query(
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
   FROM reviews 
+  WHERE category = $3
   LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
   GROUP BY reviews.review_id
-  ORDER BY created_at desc;`
+  ORDER BY $1 $2;`,
+      valuesArr
     )
     .then((results) => {
       return results.rows;

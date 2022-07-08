@@ -318,3 +318,15 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("GET:/api/reviews accepts queries", () => {
+  test("GET /api/reviews?order=asc responds with reviews sorted by date in ascending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+      });
+  });
+});
