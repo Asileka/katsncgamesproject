@@ -58,18 +58,9 @@ exports.getUsers = (req, res) => {
   });
 };
 exports.getReviews = (req, res) => {
-  const { sort_by } = req.query;
-  if (!sort_by) {
-    sort_by = "created_at";
-  }
-  const { order } = req.query;
-  if (!order) {
-    order = "desc";
-  }
-  const { category } = req.query;
-  if (!category) {
-    category = "*";
-  }
+  const sort_by = req.query.sort_by || "created_at";
+  const order = req.query.order || "desc";
+  const category = req.query.category;
   fetchReviews(sort_by, order, category).then((reviews) => {
     res.send({ reviews });
   });

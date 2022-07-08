@@ -29,12 +29,17 @@ exports.fetchReviews = (sort_by, order, category) => {
   valuesArr.push(sort_by);
   valuesArr.push(order);
   valuesArr.push(category);
+  const categoryString = "WHERE category = $3";
+  if (!category) {
+    valuesArr.push(categoryString);
+  }
+  valuesArr.push("");
   return connection
     .query(
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
   FROM reviews 
-  WHERE category = $3
   LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+  $4
   GROUP BY reviews.review_id
   ORDER BY $1 $2;`,
       valuesArr
