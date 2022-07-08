@@ -297,21 +297,24 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
   it("throws 400 error if no body sent", () => {
     return request(app)
-      .patch("//api/reviews/1/comments")
+      .post("/api/reviews/1/comments")
       .send()
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("please enter a comment and a valid username");
       });
   });
-  // it("PATCH /api/reviews/1 throws 400 error if sent a body with a wrong key", () => {
-  //   const newVote = { inc_wrongkey: 1 };
-  //   return request(app)
-  //     .patch("/api/reviews/1")
-  //     .send(newVote)
-  //     .expect(400)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe("please enter a valid number of votes");
-  //     });
-  // });
+  it("POST /api/reviews/1/comments throws 400 error if sent a body with a wrong key", () => {
+    const postedComment = {
+      wrongkey: "philippaclaire9",
+      verywrongkey: "my test comment",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(postedComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter a comment and a valid username");
+      });
+  });
 });
