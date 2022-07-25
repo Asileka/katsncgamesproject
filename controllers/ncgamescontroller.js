@@ -8,6 +8,7 @@ const {
   checkIfReviewIDExists,
   postComment,
   checkIfUserExists,
+  checkCategories,
 } = require("../models/ncgamesmodel.js");
 
 exports.getCategories = (req, res) => {
@@ -21,7 +22,6 @@ exports.getReviewByID = (req, res) => {
   if (!parsedReviewID) {
     return res.status(400).send({ msg: "please enter valid review id" });
   }
-
   fetchReviewByID(reviewID)
     .then((review) => {
       if (!review) {
@@ -58,8 +58,39 @@ exports.getUsers = (req, res) => {
     res.send({ users });
   });
 };
-exports.getReviews = (req, res) => {
-  fetchReviews().then((reviews) => {
+exports.getReviews = async (req, res) => {
+  const sort_by = req.query.sort_by || "created_at";
+  const order = req.query.order || "desc";
+  const category = req.query.category;
+  if (order !== "desc" && order !== "asc") {
+    return res.status(400).send({ msg: "please enter asc or desc order" });
+  }
+  const categoriesWhitelistBigArray = await checkCategories();
+  const categoriesWhitelist = categoriesWhitelistBigArray.reduce(
+    (acc, item) => {
+      if (!acc.includes(item.category)) {
+        acc.push(item.category);
+      }
+      return acc;
+    },
+    []
+  );
+  if (category) {
+    if (!categoriesWhitelist.includes(category)) {
+      return res.status(400).send({ msg: "please enter valid category" });
+    }
+  }
+
+  if (
+    sort_by !== "title" &&
+    sort_by !== "designer" &&
+    sort_by !== "owner" &&
+    sort_by !== "votes" &&
+    sort_by !== "created_at"
+  ) {
+    return res.status(400).send({ msg: "please enter valid sort by column" });
+  }
+  fetchReviews(sort_by, order, category).then((reviews) => {
     res.send({ reviews });
   });
 };

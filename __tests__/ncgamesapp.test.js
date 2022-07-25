@@ -318,3 +318,23 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("GET:/api/reviews accepts queries", () => {
+  test("GET /api/reviews?order=asc responds with reviews sorted by date in ascending order", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.reviews).toBeSortedBy("created_at", {
+          ascending: true,
+        });
+      });
+  });
+  test("GET /api/reviews?category=evilcategory throws 400 if entered category not in whitelist", () => {
+    return request(app)
+      .get("/api/reviews?category=evilcategory")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("please enter valid category");
+      });
+  });
+});

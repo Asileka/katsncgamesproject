@@ -24,14 +24,34 @@ exports.fetchReviewByID = (reviewID) => {
       });
   }
 };
-exports.fetchReviews = () => {
+exports.fetchReviews = (sort_by, order, category) => {
+  const valuesArr = [];
+
+  //valuesArr.push(order);
+
+  if (!category) {
+    return connection
+      .query(
+        `SELECT reviews.*, count(comments.review_id) as "comment_count" 
+  FROM reviews 
+  LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+  GROUP BY reviews.review_id
+  ORDER BY ${sort_by} ${order};`,
+        valuesArr
+      )
+      .then((results) => {
+        return results.rows;
+      });
+  }
   return connection
     .query(
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
   FROM reviews 
   LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
+  WHERE category = ${category}
   GROUP BY reviews.review_id
-  ORDER BY created_at desc;`
+  ORDER BY ${sort_by} ${order};`,
+      valuesArr
     )
     .then((results) => {
       return results.rows;
@@ -135,4 +155,15 @@ exports.checkIfUserExists = (commentUsername) => {
         return true;
       });
   }
+};
+exports.checkCategories = () => {
+  return connection
+    .query(
+      `SELECT category
+  FROM reviews;`
+    )
+    .then((results) => {
+      return results.rows;
+    })
+    .catch((err) => console.log(err + "error"));
 };
