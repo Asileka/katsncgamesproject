@@ -48,7 +48,7 @@ exports.fetchReviews = (sort_by, order, category) => {
       `SELECT reviews.*, count(comments.review_id) as "comment_count" 
   FROM reviews 
   LEFT OUTER JOIN comments on reviews.review_id =comments.review_id
-  WHERE category = ${category}
+  WHERE category = '${category}'
   GROUP BY reviews.review_id
   ORDER BY ${sort_by} ${order};`,
       valuesArr
